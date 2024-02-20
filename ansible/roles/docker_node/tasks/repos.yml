@@ -6,10 +6,9 @@
   with_items: "{{ ubuntu_repos }}"
 
 - name: Docker repo key
-  apt_key:
-    id: "{{ docker.apt_repo.key }}"
+  get_url:
     url: "{{ docker.apt_repo.url }}"
-    state: present
+    dest: /etc/apt/keyrings/docker.asc
 
 - name: Docker repo
   apt_repository:

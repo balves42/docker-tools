@@ -39,6 +39,7 @@ Variable | Default | Description |
 ADMIN_PASSWORD_SECRET | samba-admin-password | name of admin secret, see below
 ALLOW_DNS_UPDATES | secure | enable DNS updates
 BIND_INTERFACES_ONLY | yes | specify IP addresses or interfaces
+DNS_FORWARDER | (none) | value to place in `dns forwarder` in smb.conf
 DOMAIN_ACTION | provision | set to 'join' if existing domain
 DOMAIN_LOGONS | yes | support workgroup login
 DOMAIN_MASTER | no | "WAN-wide browse list collation"--haha, see [man page](https://www.samba.org/samba/docs/man/manpages-3/smb.conf.5.html)

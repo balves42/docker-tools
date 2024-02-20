@@ -1,4 +1,4 @@
-FROM alpine:3.16
+FROM alpine:3.19
 MAINTAINER Rich Braun "docker@instantlinux.net"
 ARG BUILD_DATE
 ARG VCS_REF
@@ -18,7 +18,7 @@ ENV API_TOKEN_SECRET= \
     USERNAME=git-dump \
     TZ=UTC
 
-ARG GIT_VERSION=2.36.3-r0
+ARG GIT_VERSION=2.43.0-r0
 ARG GROUP=care
 ARG GID=505
 ARG UID=212
@@ -26,6 +26,7 @@ ARG UID=212
 COPY *.sh /usr/local/bin/
 RUN apk add --no-cache --update curl dcron git=$GIT_VERSION jq \
       openssh-client tzdata && \
+    apk upgrade libcrypto3 libssl3 && \
     addgroup -g $GID $GROUP && \
     adduser -u $UID -s /bin/sh -G $GROUP -g "git backup" -D $USERNAME && \
     chmod o+rx,g+rx /usr/local/bin/*.sh

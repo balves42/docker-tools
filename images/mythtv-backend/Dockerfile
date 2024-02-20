@@ -21,14 +21,16 @@ ENV APACHE_LOG_DIR=/var/log/apache2 \
 ARG APT_KEY=13551B881504888C
 ARG MYTHTV_GID=100
 ARG MYTHTV_UID=2021
-ARG MYTHTV_PPA=http://ppa.launchpad.net/mythbuntu/32
-ARG MYTHTV_VERSION=2:32.0+fixes.202211050719.18f5b48ee1~ubuntu22.04.1
-# 2:32.0+fixes.202210280026.ba52c13223~ubuntu22.04.1
+ARG MYTHTV_PPA=http://ppa.launchpad.net/mythbuntu/33
+ARG MYTHTV_VERSION=2:33.1+fixes.202311120433.4112015bfe~ubuntu22.04.1
 ARG SSH_PORT=2022
 ARG MYTHWEB_PORT=6760
+ARG PPA_BRANCH=33
+ARG MYTHLINK_SHA=459cb8b60adae4b631a95a9cfb1b41dcb959cc4a0b9053582a711d58b8d8a0d2
 
 RUN \
-  apt-get -yq update && apt-get install -yq gnupg locales wget && \
+  apt-get -yq update && \
+  apt-get install -yq gnupg locales wget && \
   apt-key adv --recv-keys --keyserver keyserver.ubuntu.com $APT_KEY && \
   echo "deb $MYTHTV_PPA/ubuntu jammy main" \
     > /etc/apt/sources.list.d/mythbuntu.list && \
@@ -38,8 +40,9 @@ RUN \
     apache2 curl iputils-ping less lsb-release mariadb-client net-tools \
     openssh-client openssh-server mythtv-backend=$MYTHTV_VERSION \
     mythtv-common=$MYTHTV_VERSION mythtv-transcode-utils=$MYTHTV_VERSION \
-    mythweb=$MYTHTV_VERSION libmyth-python php-mythtv psmisc sudo tzdata \
-    v4l-utils vim w3m x11-utils xauth xmltv xterm
+    mythweb=$MYTHTV_VERSION libmyth-python libmythtv-perl php-mythtv psmisc \
+    sudo tzdata v4l-utils vim w3m x11-utils xauth xmltv xterm && \
+  rm /etc/ssh/ssh_host_*
 
 COPY src/ /root/
 
@@ -51,11 +54,13 @@ RUN \
   usermod -u $MYTHTV_UID -s /bin/bash mythtv && \
   mkdir -p /var/lib/mythtv $APACHE_LOG_DIR && \
   echo "mythtv:mythtv" | chpasswd && \
-  chown $MYTHTV_UID:$MYTHTV_GID /var/lib/mythtv
-RUN \
-  cat /etc/apache2/ports.conf
+  chown $MYTHTV_UID:$MYTHTV_GID /var/lib/mythtv && \
+  wget -O /usr/bin/mythlink.pl -q \
+    https://raw.githubusercontent.com/MythTV/mythtv/fixes/${PPA_BRANCH}/mythtv/contrib/user_jobs/mythlink.pl && \
+  echo "$MYTHLINK_SHA  /usr/bin/mythlink.pl" | sha256sum -c && \
+  chmod 755 /usr/bin/mythlink.pl
 
 EXPOSE $MYTHWEB_PORT $SSH_PORT 5000/udp 5002/udp 5004/udp 6543 6544 6549 \
   65001 65001/udp 
-VOLUME $APACHE_LOG_DIR
+VOLUME $APACHE_LOG_DIR /etc/ssh
 ENTRYPOINT ["/root/entrypoint.sh"]

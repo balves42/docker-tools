@@ -225,7 +225,8 @@ easy. Contents:
 | ssl | PKI certificate tools (deprecated by k8s) |
 | stacks | container resources in docker-compose format |
 
-Find images at [docker hub/instantlinux](https://hub.docker.com/r/instantlinux/).
+Find images at [docker hub/instantlinux](https://hub.docker.com/r/instantlinux/). Each image is scanned by [trivy](https://trivy.dev/) to ensure they contain no known CVE vulnerabilities before promotion to Docker Hub.
+
 Find a lot more details about the Kubernetes bare-metal installer in [k8s/README](k8s/README.md).
 
 ### Kubernetes capabilities
@@ -313,6 +314,7 @@ The cluster-deployment tools here include helm charts and ansible playbooks to s
 
 Thank you to the following contributors!
 
+* [Mike Neir](https://github.com/d0ct0rvenkman)
 * [Chad Hedstrom](https://github.com/Hadlock) - [personal site](http://nearlydeaf.com/)
 * [Sean Mollet](https://github.com/SeanMollet)
 * [Juan Manuel Carrillo Moreno](https://github.com/inetshell) - [personal site](https://wiki.inetshell.mx/)
@@ -320,5 +322,6 @@ Thank you to the following contributors!
 * [Frank Riley](https://github.com/fhriley)
 * [Devin Bayer](https://github.com/akvadrako)
 * [Daniel Muller](https://github.com/DanielMuller)
+* [Brian Hechinger](https://github.com/bhechinger)
 
-Contents created 2017-20 under [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0) by Rich Braun.
+Contents created 2017-23 under [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0) by Rich Braun.

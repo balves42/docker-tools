@@ -12,7 +12,7 @@ if [ "$OSTYPE" == "opensuse" ]; then
 elif [ "$OSTYPE" == "ubuntu" ]; then
   if [[ $(cat /etc/timezone) != $TZ ]]; then
     echo $TZ > /etc/timezone
-    DIR=/etc/php/$(php -v|grep  PHP | grep -oP "\\d+\.\\d+")
+    DIR=/etc/php/$(php -v|grep PHP | grep -oP "\\d+\.\\d+" | head -1)
     echo "date.timezone = $TZ" > $DIR/apache2/conf.d/50-tz.ini
     echo "date.timezone = $TZ" > $DIR/cli/conf.d/50-tz.ini
     dpkg-reconfigure -f noninteractive tzdata
@@ -46,11 +46,10 @@ for file in $CONF_DIR/mythweb.conf $CONF_DIR/mythweb-settings.conf \
       -e "s/{{ LOCALHOSTNAME }}/$LOCALHOSTNAME/" $file
 done
 
-if [ ! -f /etc/ssh/.keys_generated ] && \
+if [ ! -f /etc/ssh/ssh_host_rsa_key ] && \
      ! grep -q '^[[:space:]]*HostKey[[:space:]]' /etc/ssh/sshd_config; then
-  rm /etc/ssh/ssh_host*
-  ssh-keygen -A
-  touch /etc/ssh/.keys_generated
+  rm -f /etc/ssh/ssh_host*
+  dpkg-reconfigure openssh-server
 fi
 mkdir -p /var/run/sshd
 

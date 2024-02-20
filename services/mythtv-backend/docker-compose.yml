@@ -2,7 +2,7 @@ version: "3.1"
 
 services:
   app:
-    image: ${REGISTRY_URI:-instantlinux}/mythtv-backend:latest
+    image: ${REGISTRY_URI:-instantlinux}/mythtv-backend:${VERSION_MYTHTV}
     hostname: ${HOSTNAME_MYTHTV:-mythtv}
     restart: always
     environment:
@@ -17,15 +17,21 @@ services:
     - home:/home/mythtv
     - ssh-config:/etc/ssh
     - /var/mythtv:/var/mythtv
+    - /var/mythtv/arch1:/var/mythtv/arch1
+    - /var/mythtv/arch2:/var/mythtv/arch2
+    - /var/mythtv/arch3:/var/mythtv/arch3
+    - /var/mythtv/arch5:/var/mythtv/arch5
+    - /var/mythtv/arch6:/var/mythtv/arch6
+    - /var/mythtv/pvr02myth:/var/mythtv/pvr02myth
     secrets:
     - mythtv-db-password
     - mythtv-user-password
 
 secrets:
   mythtv-db-password:
-    file: /var/adm/admin/secrets/mythtv-db-password
+    file: /var/adm/secrets/mythtv-db-password
   mythtv-user-password:
-    file: /var/adm/admin/secrets/mythtv-user-password
+    file: /var/adm/secrets/mythtv-user-password
 
 volumes:
   apache2:

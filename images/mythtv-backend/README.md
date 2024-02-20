@@ -1,13 +1,13 @@
 ## mythtv-backend
 [![](https://img.shields.io/docker/v/instantlinux/mythtv-backend?sort=date)](https://hub.docker.com/r/instantlinux/mythtv-backend/tags "Version badge") [![](https://img.shields.io/docker/image-size/instantlinux/mythtv-backend?sort=date)](https://github.com/instantlinux/docker-tools/tree/main/images/mythtv-backend "Image badge") ![](https://img.shields.io/badge/platform-amd64-blue "Platform badge") [![](https://img.shields.io/badge/dockerfile-latest-blue)](https://gitlab.com/instantlinux/docker-tools/-/blob/main/images/mythtv-backend/Dockerfile "dockerfile")
 
-The MythTV backend built under Ubuntu Focal Fossa.
+The MythTV backend built under Ubuntu jammy (22.04).
 
 ### Usage
 
 This image must be run in network_mode:host in order to communicate with HD Homerun tuners; assign a new IP address and hostname for this application, and define it as a secondary IP address on your Docker host's primary interface.
 
-For configuration, see the example docker-compose.yml (for swarm or standalone docker) or [helm](https://github.com/instantlinux/docker-tools/blob/main/images/helm) or kubernetes.yaml to run on bare-metal Kubernetes. Set environment variables and secrets as defined here, customize volume mounts as desired. This repo has complete instructions for
+For configuration, see the example docker-compose.yml (for swarm or standalone docker) or [helm](https://github.com/instantlinux/docker-tools/blob/main/images/helm) or kubernetes.yaml to run on bare-metal Kubernetes. Set environment variables and secrets as defined here, and customize volume mounts as desired. This repo has complete instructions for
 [building a kubernetes cluster](https://github.com/instantlinux/docker-tools/blob/main/k8s/README.md) where you can launch with [helm](https://github.com/instantlinux/docker-tools/tree/main/images/mythtv-backend/helm) or [kubernetes.yaml](https://github.com/instantlinux/docker-tools/blob/main/images/mythtv-backend/kubernetes.yaml) using _make_ and customizing [Makefile.vars](https://github.com/instantlinux/docker-tools/blob/main/k8s/Makefile.vars) after cloning this repo:
 ~~~
 git clone https://github.com/instantlinux/docker-tools.git
@@ -75,6 +75,17 @@ make mythfrontend-setup
 
 This ansible script is prone to configuration glitches so you will likely have to make adjustments in order to complete the process.
 
+Note that the [Kodi](https://kodi.tv/download/) frontend also provides limited support for the MythTV backend.
+ 
+### Volumes
+
+Optionally, mount these path names to persistent storage:
+
+Path | Description
+---- | -----------
+/var/log/apache2 | Apache logs
+/etc/ssh | Host keys and configs for ssh
+
 ### Secrets
 
 Add these as Kubernetes secrets, or if you're running standalone specify these with source type "file". See the above volume mounts or the sample docker-compose.yml.
@@ -87,7 +98,7 @@ mythweb-auth | htpasswd for mythweb user(s) under k8s
 
 ### Upgrade Notes
 
-Version 31:
+(This section applies only if you're running version 30, from 2020 or earlier.)
 
 You probably need to configure XMLTV in place of the old mythfilldatabase method used to fetch listings from [Schedules Direct](https://www.schedulesdirect.org/). See the documentation [Setup Video Sources](https://www.mythtv.org/wiki/Setup_Video_Sources). This image includes the required packages but does not automate setup. It's beyond scope of this document to describe the process fully but here are some of the required steps:
 
