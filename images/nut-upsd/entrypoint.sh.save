@@ -12,12 +12,9 @@ if [ ! -e /etc/nut/.setup ]; then
       echo "** This container may not work without setting for SERIAL **"
     fi
     cat <<EOF >>/etc/nut/ups.conf
-EOF
-    if [ ! -z "$POLLINTERVAL" ]; then
-      echo "pollinterval = $POLLINTERVAL" >> /etc/nut/ups.conf
-    fi
-    cat <<EOF >>/etc/nut/ups.conf
-[$NAME]
+pollinterval = 1
+
+
         driver = $DRIVER
         port = $PORT
         desc = "$DESCRIPTION"

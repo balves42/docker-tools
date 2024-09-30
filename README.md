@@ -4,7 +4,7 @@ The following tutorial depicts my adventure in making a [Megatec protocol](https
 
 ![UPS Home Assistant](https://i.imgur.com/KgP4tDF.png=250x250)
 
-I bought a cheap UPS in Portugal from a lesser known brand called "Eurotech", it came with some installation cd with a program called UPSmart which only works when it is plugged to a computer running windows:
+I bought a cheap UPS in Portugal from a lesser known brand called "Eurotech", it came with some installation cd with a program called [UPSmart](https://zircon.co.th/en/download_software_for_ups) which only works when it is plugged to a computer running windows:
 
 <p float="left">
   <img src="https://i.imgur.com/1ApNwFm.jpg" width=45% height=45%>
@@ -97,6 +97,9 @@ pollinterval=1
     novendor
     langid_fix = "0x0409"
     override.battery.packs = 1
+    default.battery.voltage.high = "13.8"
+    default.battery.voltage.low = "12"
+    pollfreq = 1
 ```
 Your main challenge will be finding out which combination of configurations will work for you. Mine was a result of checking the [open issues](https://github.com/networkupstools/nut/issues?q=is%3Aissue+is%3Aopen+fry%27s+electronics) and the [driver documentation](https://networkupstools.org/docs/man/) for drivers like [blazer_ser](https://networkupstools.org/docs/man/blazer_ser.html), [blazer_usb](https://networkupstools.org/docs/man/blazer_usb.html), [nut_atcl_usb](https://networkupstools.org/docs/man/nutdrv_atcl_usb.html) or [nutdrv_qx](https://networkupstools.org/docs/man/nutdrv_qx.html) and checking their subdrivers, protocols and langid_fixes. **Don't ask me directly what will work in your UPS, it will be your own adventure.**
 
@@ -185,9 +188,12 @@ docker run -d \
 -e NORATING='true' \
 -e NOVENDOR='true' \
 -e OVERRIDE_BATTERY_PACKS='1' \
+-e DEFAULT_BATTERY_VOLTAGE_HIGH='13.8' \
+-e DEFAULT_BATTERY_VOLTAGE_LOW='12' \
 -e VENDORID='0001' \
 -e PRODUCTID='0000' \
 -e POLLINTERVAL='1' \
+-e POLLFREQ='1' \
 -e API_USER='admin' \
 -e API_PASSWORD='secret' \
 --restart always \
@@ -205,6 +211,19 @@ Add a new integration and select NUT, add the ip of the server where you install
   <img src="https://i.imgur.com/Zzff8GV.png" width=42% height=42%>
 </p>
 
+### Scan interval workaround
+
+The default scan interval is set to 60 seconds. If you go to the integration options you can set it to a minimum of 10 seconds
+
+<p float="left">
+  <img src="https://i.imgur.com/gDlB21a.png" width=45% height=45%>
+</p>
+
+One way of editing this value directly without the GUI is to edit the file ``` <homeassistant-config-folder>/.storage/core.config_entries ```
+
+**BACKUP THIS FILE FIRST!**
+
+Look for the line with the ``` scan_interval ``` of NUT and set it to 1 (for example)
 
 ## Practical Docker Tools
 
